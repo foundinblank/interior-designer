@@ -123,26 +123,26 @@ npm run test -- tests/unit/  # Unit tests should pass now
 
 #### UI Components Layer
 
-- [ ] T029 [P] [US1] Create src/index.html with semantic HTML structure and keyboard-accessible markup
-- [ ] T030 [P] [US1] Implement src/components/ImagePair.js with A/B image display and selection handling
-- [ ] T031 [P] [US1] Implement src/components/ExplanationForm.js with 10-char validation and error display
-- [ ] T032 [P] [US1] Implement src/components/PlaceholderImage.js with retry button
-- [ ] T033 [US1] Create src/lib/router.js with hash-based routing for discovery/recommendations phases
-- [ ] T034 [US1] Create src/services/keyboardNav.js with keyboard event handlers (A/B selection, Tab, Enter, Escape)
+- [x] T029 [P] [US1] Create src/index.html with semantic HTML structure and keyboard-accessible markup
+- [x] T030 [P] [US1] Implement src/components/ImagePair.js with A/B image display and selection handling
+- [x] T031 [P] [US1] Implement src/components/ExplanationForm.js with 10-char validation and error display
+- [x] T032 [P] [US1] Implement src/components/PlaceholderImage.js with retry button
+- [x] T033 [US1] Create src/lib/router.js with hash-based routing for discovery/recommendations phases
+- [x] T034 [US1] Create src/services/keyboardNav.js with keyboard event handlers (A/B selection, Tab, Enter, Escape)
 
 #### Styling Layer
 
-- [ ] T035 [P] [US1] Create src/styles/typography.css with heading/body text hierarchy
-- [ ] T036 [P] [US1] Implement side-by-side image layout styles in src/components/ImagePair.css
-- [ ] T037 [P] [US1] Implement form styles with validation feedback in src/components/ExplanationForm.css
-- [ ] T038 [P] [US1] Implement placeholder styles with retry button in src/components/PlaceholderImage.css
+- [x] T035 [P] [US1] Create src/styles/typography.css with heading/body text hierarchy
+- [x] T036 [P] [US1] Implement side-by-side image layout styles in src/components/ImagePair.css
+- [x] T037 [P] [US1] Implement form styles with validation feedback in src/components/ExplanationForm.css
+- [x] T038 [P] [US1] Implement placeholder styles with retry button in src/components/PlaceholderImage.css
 
 #### Integration & Entry Point
 
-- [ ] T039 [US1] Implement src/main.js as application entry point (load data, initialize session, mount components)
-- [ ] T040 [US1] Wire ImagePair component to session manager (record choices)
-- [ ] T041 [US1] Wire ExplanationForm component to validators and session manager
-- [ ] T042 [US1] Wire recommendation engine to trigger phase transition when confidence threshold met
+- [x] T039 [US1] Implement src/main.js as application entry point (load data, initialize session, mount components)
+- [x] T040 [US1] Wire ImagePair component to session manager (record choices)
+- [x] T041 [US1] Wire ExplanationForm component to validators and session manager
+- [x] T042 [US1] Wire recommendation engine to trigger phase transition when confidence threshold met
 
 **Run All Tests (should fully pass - Green phase complete)**:
 ```bash
@@ -152,7 +152,7 @@ npm run test:e2e        # Keyboard navigation E2E test passes
 
 #### Sample Images (MVP Minimum)
 
-- [ ] T043 [US1] Add 10 sample living room images (2 per style: modern, traditional, minimalist, bohemian, industrial, scandinavian) to public/images/living-rooms/ and populate src/data/images.json
+- [x] T043 [US1] Add 12 sample living room images (2 per style: modern, traditional, minimalist, bohemian, industrial, scandinavian) using Unsplash and populate src/data/images.json
 
 **User Story 1 Complete** ✅ - Independent test passes: User can discover style through binary choices
 

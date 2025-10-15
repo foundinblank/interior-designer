@@ -1,3 +1,148 @@
 {
-  "images": []
+  "images": [
+    {
+      "id": "modern-001",
+      "url": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800",
+      "thumbnail": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400",
+      "primaryStyle": "modern",
+      "secondaryStyles": ["minimalist"],
+      "colors": ["white", "gray", "neutral"],
+      "furniture": ["sofa", "coffee-table"],
+      "lighting": ["natural"],
+      "attributes": ["clean-lines", "open-space"],
+      "alt": "Modern living room with white sofa and minimal decor"
+    },
+    {
+      "id": "modern-002",
+      "url": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800",
+      "thumbnail": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400",
+      "primaryStyle": "modern",
+      "secondaryStyles": [],
+      "colors": ["gray", "white"],
+      "furniture": ["sectional-sofa"],
+      "lighting": ["recessed"],
+      "attributes": ["geometric", "sleek"],
+      "alt": "Contemporary modern living room with gray sectional"
+    },
+    {
+      "id": "traditional-001",
+      "url": "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=800",
+      "thumbnail": "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=400",
+      "primaryStyle": "traditional",
+      "secondaryStyles": [],
+      "colors": ["brown", "cream", "warm"],
+      "furniture": ["armchair", "side-table"],
+      "lighting": ["lamp"],
+      "attributes": ["classic", "ornate"],
+      "alt": "Traditional living room with warm tones and classic furniture"
+    },
+    {
+      "id": "traditional-002",
+      "url": "https://images.unsplash.com/photo-1556020685-ae41abfc9365?w=800",
+      "thumbnail": "https://images.unsplash.com/photo-1556020685-ae41abfc9365?w=400",
+      "primaryStyle": "traditional",
+      "secondaryStyles": [],
+      "colors": ["beige", "brown"],
+      "furniture": ["sofa", "ottoman"],
+      "lighting": ["chandelier"],
+      "attributes": ["elegant", "formal"],
+      "alt": "Elegant traditional living room with chandelier"
+    },
+    {
+      "id": "minimalist-001",
+      "url": "https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=800",
+      "thumbnail": "https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=400",
+      "primaryStyle": "minimalist",
+      "secondaryStyles": ["modern"],
+      "colors": ["white", "neutral"],
+      "furniture": ["simple-sofa"],
+      "lighting": ["natural"],
+      "attributes": ["sparse", "zen"],
+      "alt": "Minimalist living room with sparse furniture and white walls"
+    },
+    {
+      "id": "minimalist-002",
+      "url": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800",
+      "thumbnail": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400",
+      "primaryStyle": "minimalist",
+      "secondaryStyles": ["scandinavian"],
+      "colors": ["white", "beige"],
+      "furniture": ["low-sofa"],
+      "lighting": ["pendant"],
+      "attributes": ["clean", "simple"],
+      "alt": "Clean minimalist space with low furniture"
+    },
+    {
+      "id": "bohemian-001",
+      "url": "https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=800",
+      "thumbnail": "https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=400",
+      "primaryStyle": "bohemian",
+      "secondaryStyles": [],
+      "colors": ["colorful", "vibrant", "mixed"],
+      "furniture": ["floor-cushions", "poufs"],
+      "lighting": ["string-lights"],
+      "attributes": ["eclectic", "layered"],
+      "alt": "Bohemian living room with colorful textiles and floor seating"
+    },
+    {
+      "id": "bohemian-002",
+      "url": "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800",
+      "thumbnail": "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=400",
+      "primaryStyle": "bohemian",
+      "secondaryStyles": [],
+      "colors": ["earth-tones", "green"],
+      "furniture": ["vintage-sofa"],
+      "lighting": ["natural"],
+      "attributes": ["plants", "texture"],
+      "alt": "Boho living room with plants and vintage furniture"
+    },
+    {
+      "id": "industrial-001",
+      "url": "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=800",
+      "thumbnail": "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400",
+      "primaryStyle": "industrial",
+      "secondaryStyles": ["modern"],
+      "colors": ["gray", "metal", "dark"],
+      "furniture": ["leather-sofa"],
+      "lighting": ["exposed-bulbs"],
+      "attributes": ["raw", "urban"],
+      "alt": "Industrial loft living room with exposed brick and metal accents"
+    },
+    {
+      "id": "industrial-002",
+      "url": "https://images.unsplash.com/photo-1574643156929-51fa098b0394?w=800",
+      "thumbnail": "https://images.unsplash.com/photo-1574643156929-51fa098b0394?w=400",
+      "primaryStyle": "industrial",
+      "secondaryStyles": [],
+      "colors": ["concrete", "metal"],
+      "furniture": ["metal-frame-sofa"],
+      "lighting": ["track"],
+      "attributes": ["loft", "raw-materials"],
+      "alt": "Urban industrial space with concrete and metal elements"
+    },
+    {
+      "id": "scandinavian-001",
+      "url": "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=800",
+      "thumbnail": "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=400",
+      "primaryStyle": "scandinavian",
+      "secondaryStyles": ["minimalist"],
+      "colors": ["white", "light-wood", "pastels"],
+      "furniture": ["wooden-furniture"],
+      "lighting": ["natural", "pendant"],
+      "attributes": ["cozy", "light"],
+      "alt": "Scandinavian living room with light wood and white walls"
+    },
+    {
+      "id": "scandinavian-002",
+      "url": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800",
+      "thumbnail": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400",
+      "primaryStyle": "scandinavian",
+      "secondaryStyles": ["modern"],
+      "colors": ["white", "gray", "wood"],
+      "furniture": ["simple-chair", "wooden-table"],
+      "lighting": ["floor-lamp"],
+      "attributes": ["hygge", "nordic"],
+      "alt": "Nordic style living room with hygge atmosphere"
+    }
+  ]
 }
