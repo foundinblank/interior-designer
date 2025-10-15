@@ -1,0 +1,318 @@
+/* Typeform-inspired Full-Screen Experience */
+
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+#app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+}
+
+/* Typeform-style question container */
+.question-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-xxl);
+  animation: fadeIn 0.4s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* Progress bar at top */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 100;
+}
+
+.progress-fill {
+  height: 100%;
+  background: white;
+  transition: width 0.3s ease;
+}
+
+/* Round number */
+.round-number {
+  position: fixed;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  color: white;
+  font-size: var(--font-size-sm);
+  opacity: 0.8;
+}
+
+/* Question text */
+.question-text {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-xxl);
+  text-align: center;
+  max-width: 800px;
+  line-height: 1.3;
+}
+
+.question-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.25rem;
+  margin-top: var(--spacing-md);
+  font-weight: 400;
+}
+
+/* Image pair - Typeform style */
+.typeform-image-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.typeform-image-option {
+  position: relative;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.typeform-image-option:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.typeform-image-option:focus {
+  outline: 4px solid white;
+  outline-offset: 4px;
+}
+
+.typeform-image-option img {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  display: block;
+}
+
+.typeform-image-label {
+  position: absolute;
+  top: var(--spacing-lg);
+  left: var(--spacing-lg);
+  background: white;
+  color: #667eea;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+
+.typeform-image-hint {
+  position: absolute;
+  bottom: var(--spacing-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 20px;
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.typeform-image-option:hover .typeform-image-hint {
+  opacity: 1;
+}
+
+/* Explanation form - Typeform style */
+.typeform-explanation {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.typeform-textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: var(--spacing-lg);
+  color: white;
+  font-size: 1.25rem;
+  font-family: inherit;
+  resize: none;
+  min-height: 120px;
+  transition: all 0.2s ease;
+}
+
+.typeform-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.typeform-textarea:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.25);
+  border-color: white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.typeform-hint {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-sm);
+  text-align: center;
+}
+
+.typeform-submit {
+  background: white;
+  color: #667eea;
+  border: none;
+  padding: var(--spacing-md) var(--spacing-xxl);
+  border-radius: 8px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: var(--spacing-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.typeform-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.typeform-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Error message */
+.typeform-error {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.15);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 8px;
+  margin-top: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+/* Results phase */
+.typeform-results {
+  color: white;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.results-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+}
+
+.results-subtitle {
+  font-size: 1.5rem;
+  opacity: 0.9;
+  margin-bottom: var(--spacing-xxl);
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--spacing-lg);
+  margin: var(--spacing-xxl) 0;
+}
+
+.results-image {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.results-image:hover {
+  transform: scale(1.05);
+}
+
+.results-image img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.results-actions {
+  margin-top: var(--spacing-xxl);
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .question-text {
+    font-size: 1.75rem;
+  }
+
+  .typeform-image-pair {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .typeform-image-option img {
+    height: 300px;
+  }
+
+  .results-title {
+    font-size: 2rem;
+  }
+}

@@ -37,6 +37,15 @@ A user unsure about their living room style preferences launches the app and is 
 8. **Given** user provides an explanation with fewer than 10 characters, **When** they attempt to submit, **Then** system displays validation message requiring at least 10 characters
 9. **Given** user provides an explanation with 10+ characters (including vague responses), **When** they submit, **Then** system accepts the explanation and proceeds to next round
 10. **Given** user is viewing image pair options A and B, **When** attempting to proceed without making a selection, **Then** system requires selection of either A or B (no skip option available)
+11. **Given** user is viewing image pair options, **When** user presses the "A" key on keyboard, **Then** option A is selected (same behavior as clicking)
+12. **Given** user is viewing image pair options, **When** user presses the "B" key on keyboard, **Then** option B is selected (same behavior as clicking)
+13. **Given** user is typing in the explanation text field, **When** user types "A" or "B" keys, **Then** the letters appear in the text field and do NOT trigger image selection
+14. **Given** user has typed an explanation, **When** user presses Shift+Enter, **Then** the explanation is submitted and next round begins
+15. **Given** user opens the app, **When** the discovery phase loads, **Then** a full-screen gradient background with centered question text is displayed (Typeform-style layout)
+16. **Given** user is progressing through rounds, **When** transitioning between image selection and explanation phases, **Then** smooth fade animations are displayed
+17. **Given** user is in the discovery phase, **When** viewing any screen, **Then** a visual progress bar at the top shows completion percentage
+18. **Given** app is initializing, **When** images are being loaded, **Then** all images are validated for accessibility and living room content before being added to the available pool
+19. **Given** an image fails validation during initialization, **When** the image cannot be loaded, **Then** the image is removed from the pool and app continues with valid images only
 
 ---
 
@@ -73,6 +82,26 @@ During the discovery process, users can see how many rounds they've completed an
 1. **Given** user is in the discovery phase, **When** viewing any pair of images, **Then** a progress indicator shows current round number
 2. **Given** user has completed a round, **When** the next pair loads, **Then** the progress indicator increments by one
 3. **Given** user is nearing recommendation readiness, **When** the system calculates confidence level, **Then** an estimated range of remaining rounds is displayed (e.g., "About 3-5 more rounds")
+
+---
+
+### User Story 4 - Enhanced LLM Analysis (Priority: P4)
+
+Users who provide an LLM API key can benefit from deeper semantic analysis of their explanations, leading to more accurate style recommendations and personalized insights. The system gracefully degrades to keyword-based analysis when LLM is unavailable.
+
+**Why this priority**: This is an enhancement that improves recommendation accuracy but is not required for core functionality. The app works perfectly well with keyword-based analysis alone.
+
+**Independent Test**: Can be tested by providing an API key and verifying that LLM analysis provides richer insights, then testing without an API key to verify graceful degradation to keyword-based analysis.
+
+**Acceptance Scenarios**:
+
+1. **Given** user has not provided an LLM API key, **When** submitting explanations, **Then** system uses keyword-based analysis to extract style preferences
+2. **Given** user has provided a valid LLM API key, **When** submitting explanations, **Then** system uses LLM to perform semantic analysis of the explanation
+3. **Given** LLM analysis is being used, **When** analyzing user explanation, **Then** system extracts emotions, design elements, and style indicators in addition to keywords
+4. **Given** LLM API call fails or times out, **When** analysis is needed, **Then** system automatically falls back to keyword-based analysis
+5. **Given** user wants to enable LLM features, **When** accessing settings, **Then** an option to provide API key is available with clear instructions
+6. **Given** user provides an API key, **When** the key is entered, **Then** the key is stored in localStorage only (never transmitted to any server except the LLM API provider)
+7. **Given** LLM analysis is enabled, **When** generating final recommendations, **Then** style descriptions are personalized based on the user's specific language and preferences
 
 ---
 
@@ -118,6 +147,16 @@ During the discovery process, users can see how many rounds they've completed an
 - **FR-023**: System MUST provide an option to view alternative style recommendations when user rejects initial recommendations
 - **FR-024**: System MUST provide an option to restart the discovery process from round 1 when user rejects recommendations
 - **FR-025**: System MUST clear all session data when user chooses to restart the discovery process
+- **FR-026**: System MUST support keyboard shortcuts for selecting image options (A key for option A, B key for option B)
+- **FR-027**: System MUST NOT trigger keyboard shortcuts when user is actively typing in text input fields
+- **FR-028**: System MUST support Shift+Enter keyboard shortcut to submit explanation text
+- **FR-029**: System MUST implement full-screen, focused question presentation (Typeform-style UX) with animated transitions between rounds
+- **FR-030**: System MUST display progress indicator as a visual bar at the top of the screen during discovery phase
+- **FR-031**: System MUST validate all images in the library before app initialization to ensure they are accessible and valid living room images
+- **FR-032**: System MUST filter out broken or inaccessible images from the available pool before presenting to users
+- **FR-033**: System MUST provide enhanced explanation analysis using LLM when available (hybrid approach)
+- **FR-034**: System MUST gracefully degrade to keyword-based analysis when LLM is unavailable
+- **FR-035**: System MUST allow users to optionally provide their own LLM API key for enhanced analysis (stored in localStorage only)
 
 ### Key Entities
 

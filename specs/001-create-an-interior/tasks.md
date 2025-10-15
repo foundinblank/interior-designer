@@ -4,9 +4,10 @@
 **Branch**: `001-create-an-interior`
 **Plan**: [plan.md](./plan.md) | **Spec**: [spec.md](./spec.md) | **Data Model**: [data-model.md](./data-model.md)
 
-**Total Tasks**: 100 (includes 2 success criteria validation tasks added in Phase 6)
+**Total Tasks**: 111 (includes Phase 7 post-MVP enhancements from user feedback)
 **Test-First Approach**: ✅ Tests written before implementation (TDD per constitution)
 **Independent Stories**: ✅ Each user story is independently testable and deliverable
+**MVP Status**: ✅ Completed (T001-T043) - Tested and functional
 
 ---
 
@@ -26,6 +27,7 @@
 4. **Phase 4**: User Story 2 - Style Confirmation (T044-T065)
 5. **Phase 5**: User Story 3 - Mid-Session Progress (T066-T078)
 6. **Phase 6**: Polish & Cross-Cutting (T079-T098)
+7. **Phase 7**: Post-MVP Enhancements from User Feedback (T099-T109) ← **RECENTLY COMPLETED**
 
 ### Parallel Execution Opportunities
 Tasks marked `[P]` can run in parallel within their phase (different files, no dependencies on incomplete tasks).
@@ -358,6 +360,85 @@ wait
 
 ---
 
+## Phase 7: Post-MVP Enhancements from User Feedback (US4 - LLM Analysis)
+
+**Goal**: Implement improvements based on real-world MVP testing feedback
+
+**Story Goal**: Address keyboard bugs, improve UX with Typeform-style design, validate images proactively, and add optional LLM-powered analysis
+
+**Dependencies**: Requires Phase 3 (MVP) complete
+
+**User Feedback Addressed**:
+1. ✅ Image validation - broken/missing images
+2. ✅ Keyboard bug - A/B keys triggering while typing
+3. ✅ Shift+Enter submit functionality
+4. ✅ Typeform-style UX redesign
+5. 🔄 LLM integration for better analysis (in progress)
+6. ✅ Non-living-room image removal
+
+### Implementation Tasks
+
+#### Image Validation & Quality (FR-031, FR-032)
+
+- [x] T099 [P] Add async validateImages() function to src/main.js that tests each image URL before app starts
+- [x] T100 [P] Implement 5-second timeout per image validation attempt in validateImages()
+- [x] T101 Filter out broken images and create validImages array to replace images array
+- [x] T102 [P] Add error state UI when <2 valid images remain after validation
+- [x] T103 [P] Update src/data/images.json with verified 2024-2025 Unsplash living room photos (replaced all 12 images)
+
+#### Keyboard Accessibility Improvements (FR-026, FR-027, FR-028)
+
+- [x] T104 Fix setupKeyboardShortcuts() in src/main.js to detect when user is typing (check e.target.tagName)
+- [x] T105 Add isTyping check to prevent A/B shortcuts from firing when focus is in TEXTAREA or INPUT
+- [x] T106 [P] Implement Shift+Enter handler in setupKeyboardShortcuts() to submit explanation
+- [x] T107 [P] Add Tab accessibility test to ensure keyboard shortcuts don't interfere with form navigation
+
+#### Typeform-Style UX Redesign (FR-029, FR-030)
+
+- [x] T108 [P] Create src/styles/typeform.css with full-screen gradient backgrounds and centered layouts
+- [x] T109 [P] Implement progress bar component at top of screen (fixed position, animated width transition)
+- [x] T110 Add fadeIn/fadeOut animation keyframes to typeform.css for smooth transitions
+- [x] T111 Redesign question-container with flexbox centering and min-height: 100vh
+- [x] T112 [P] Style image options as cards with hover effects (translateY, box-shadow transitions)
+- [x] T113 [P] Implement glassmorphic textarea styling (rgba backgrounds, border transitions)
+- [x] T114 Update renderDiscoveryPhase() in src/main.js to use new Typeform-style HTML structure
+- [x] T115 Update handleImageSelection() to trigger fadeOut animation before phase transition
+- [x] T116 Link src/styles/typeform.css in src/index.html
+
+#### LLM Integration - Hybrid Approach (FR-033, FR-034, FR-035) - **IN PROGRESS**
+
+- [ ] T117 [P] [US4] Write unit test for llmAnalyzer.js (analyzeExplanation, fallback to keywords) in tests/unit/llmAnalyzer.test.js
+- [ ] T118 [US4] Create src/services/llmAnalyzer.js with analyzeExplanation(text, apiKey) function
+- [ ] T119 [US4] Implement Claude API integration using Anthropic SDK (Haiku model for cost efficiency)
+- [ ] T120 [US4] Add graceful fallback to extractKeywords() when LLM unavailable or fails
+- [ ] T121 [P] [US4] Create src/components/SettingsModal.js for optional API key input
+- [ ] T122 [P] [US4] Add localStorage helper functions for API key storage/retrieval
+- [ ] T123 [US4] Wire llmAnalyzer to handleSubmitExplanation() in src/main.js (use LLM if apiKey exists)
+- [ ] T124 [US4] Add timeout (5s) and error handling to LLM API calls
+- [ ] T125 [US4] Update recommendation engine to use enhanced LLM analysis data (emotions, style_indicators)
+- [ ] T126 [P] [US4] Add settings icon/button to discovery phase UI for accessing API key modal
+- [ ] T127 [US4] Write E2E test for LLM analysis flow (with and without API key)
+
+**Run All Tests (should pass)**:
+```bash
+npm run test            # All unit tests pass with LLM fallback
+npm run test:e2e        # E2E tests verify both LLM and keyword modes
+```
+
+**Parallel Execution Example** (Phase 7):
+```bash
+# Create LLM components and update styles simultaneously
+touch src/services/llmAnalyzer.js src/components/SettingsModal.js &
+touch src/styles/typeform.css &
+wait
+```
+
+**Phase 7 Status**:
+- ✅ Tasks T099-T116 completed (Image validation, Keyboard fixes, Typeform UX)
+- 🔄 Tasks T117-T127 in progress (LLM integration)
+
+---
+
 ## Dependency Graph
 
 ```
@@ -367,6 +448,7 @@ Phase 2 (Foundational)
     ↓
     ├─→ Phase 3 (US1: Binary Choice) ─→ Phase 4 (US2: Confirmation)
     ├─→ Phase 3 (US1: Binary Choice) ─→ Phase 5 (US3: Progress)
+    ├─→ Phase 3 (US1: Binary Choice) ─→ Phase 7 (Post-MVP Enhancements)
     └─────────────────────────────────→ Phase 6 (Polish)
 ```
 
@@ -374,6 +456,7 @@ Phase 2 (Foundational)
 - Phase 3 (US1) MUST complete before Phase 4 (US2) - US2 depends on recommendation engine from US1
 - Phase 5 (US3) is independent of Phase 4 (US2) - can implement in any order after US1
 - Phase 6 (Polish) can start once any user story is complete (incremental polish)
+- Phase 7 (Post-MVP Enhancements) can start after Phase 3 (MVP testing reveals improvement areas)
 
 ---
 
@@ -439,9 +522,14 @@ vi tests/unit/validators.test.js
 | US2: Confirmation | T044-T065 | 22 | 12 | P2 |
 | US3: Progress | T066-T078 | 13 | 6 | P3 |
 | Polish | T079-T098 + T084a-T084b | 22 | 16 | N/A |
-| **TOTAL** | **T001-T098 + 2 SC validation tasks** | **100** | **63** | **3 stories** |
+| Post-MVP (US4: LLM) | T099-T127 | 29 | 14 | P4 |
+| **TOTAL** | **T001-T127** | **129** | **77** | **4 stories** |
 
-**Parallelization Potential**: 63% of tasks (63/100) can run in parallel within their phase
+**Parallelization Potential**: 60% of tasks (77/129) can run in parallel within their phase
+
+**Phase 7 Breakdown**:
+- ✅ T099-T116 completed (18 tasks): Image validation, keyboard fixes, Typeform UX
+- 🔄 T117-T127 in progress (11 tasks): LLM hybrid integration
 
 ---
 
