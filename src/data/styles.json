@@ -1,0 +1,52 @@
+{
+  "styles": [
+    {
+      "id": "modern",
+      "displayName": "Modern",
+      "description": "Clean lines, neutral colors, and minimalist decor define modern style.",
+      "keywords": ["contemporary", "sleek", "simple", "geometric"],
+      "relatedStyles": ["minimalist", "scandinavian"],
+      "imageCount": 0
+    },
+    {
+      "id": "traditional",
+      "displayName": "Traditional",
+      "description": "Classic furniture, rich colors, and ornate details create a timeless look.",
+      "keywords": ["classic", "elegant", "formal", "ornate"],
+      "relatedStyles": [],
+      "imageCount": 0
+    },
+    {
+      "id": "minimalist",
+      "displayName": "Minimalist",
+      "description": "Less is more with sparse furnishings and a focus on function over form.",
+      "keywords": ["simple", "sparse", "clean", "zen"],
+      "relatedStyles": ["modern", "scandinavian"],
+      "imageCount": 0
+    },
+    {
+      "id": "bohemian",
+      "displayName": "Bohemian",
+      "description": "Eclectic mix of colors, patterns, and global-inspired decor.",
+      "keywords": ["boho", "eclectic", "colorful", "layered"],
+      "relatedStyles": [],
+      "imageCount": 0
+    },
+    {
+      "id": "industrial",
+      "displayName": "Industrial",
+      "description": "Exposed materials, metal accents, and raw finishes create urban edge.",
+      "keywords": ["urban", "loft", "raw", "metal"],
+      "relatedStyles": ["modern"],
+      "imageCount": 0
+    },
+    {
+      "id": "scandinavian",
+      "displayName": "Scandinavian",
+      "description": "Light woods, white walls, and cozy textiles embody Nordic simplicity.",
+      "keywords": ["nordic", "hygge", "light", "cozy"],
+      "relatedStyles": ["minimalist", "modern"],
+      "imageCount": 0
+    }
+  ]
+}

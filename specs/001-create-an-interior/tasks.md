@@ -36,14 +36,14 @@ Tasks marked `[P]` can run in parallel within their phase (different files, no d
 
 **Goal**: Initialize project with minimal dependencies and verify build/test infrastructure
 
-- [ ] T001 Initialize Node.js project with package.json
-- [ ] T002 [P] Install Vite as dev dependency in package.json
-- [ ] T003 [P] Install Vitest as test dependency in package.json
-- [ ] T004 [P] Install Playwright as E2E test dependency in package.json
-- [ ] T005 [P] Install ESLint and Prettier as dev dependencies in package.json
-- [ ] T006 Create vite.config.js with ES2022 target and absolute import paths
-- [ ] T007 Create vitest.config.js with test environment configuration
-- [ ] T008 Create playwright.config.js with keyboard navigation test configuration
+- [x] T001 Initialize Node.js project with package.json
+- [x] T002 [P] Install Vite as dev dependency in package.json
+- [x] T003 [P] Install Vitest as test dependency in package.json
+- [x] T004 [P] Install Playwright as E2E test dependency in package.json
+- [x] T005 [P] Install ESLint and Prettier as dev dependencies in package.json
+- [x] T006 Create vite.config.js with ES2022 target and absolute import paths
+- [x] T007 Create vitest.config.js with test environment configuration
+- [x] T008 Create playwright.config.js with keyboard navigation test configuration
 
 **Parallel Execution Example** (Phase 1):
 ```bash
@@ -60,14 +60,14 @@ wait
 
 **Goal**: Create project structure, static data, and core utilities needed by all user stories
 
-- [ ] T009 Create src/ directory structure per plan.md (components/, services/, data/, lib/, styles/)
-- [ ] T010 Create public/images/living-rooms/ directory structure (modern/, traditional/, minimalist/, bohemian/, industrial/, scandinavian/)
-- [ ] T011 Create tests/ directory structure (unit/, integration/, e2e/)
-- [ ] T012 [P] Create src/data/styles.json with 6 predefined styles from data-model.md
-- [ ] T013 [P] Create src/data/images.json template (empty array, ready for image metadata)
-- [ ] T014 [P] Create .eslintrc.json with ES2022 config and accessibility rules
-- [ ] T015 [P] Create src/styles/global.css with CSS custom properties and base styles
-- [ ] T016 [P] Create src/styles/keyboard.css with focus indicators (3px solid, 4px offset per research.md)
+- [x] T009 Create src/ directory structure per plan.md (components/, services/, data/, lib/, styles/)
+- [x] T010 Create public/images/living-rooms/ directory structure (modern/, traditional/, minimalist/, bohemian/, industrial/, scandinavian/)
+- [x] T011 Create tests/ directory structure (unit/, integration/, e2e/)
+- [x] T012 [P] Create src/data/styles.json with 6 predefined styles from data-model.md
+- [x] T013 [P] Create src/data/images.json template (empty array, ready for image metadata)
+- [x] T014 [P] Create .eslintrc.json with ES2022 config and accessibility rules
+- [x] T015 [P] Create src/styles/global.css with CSS custom properties and base styles
+- [x] T016 [P] Create src/styles/keyboard.css with focus indicators (3px solid, 4px offset per research.md)
 
 **Parallel Execution Example** (Phase 2):
 ```bash
@@ -89,12 +89,12 @@ wait
 
 ### Test Tasks (Write First per TDD)
 
-- [ ] T017 [P] [US1] Write unit test for validators.js (10-char minimum validation) in tests/unit/validators.test.js
-- [ ] T018 [P] [US1] Write unit test for sessionManager.js (create, load, save, validate session) in tests/unit/sessionManager.test.js
-- [ ] T019 [P] [US1] Write unit test for imageLoader.js (retry logic, exponential backoff) in tests/unit/imageLoader.test.js
-- [ ] T020 [P] [US1] Write unit test for recommendationEngine.js (calculateStyleScores, isConfident, getTopStyles) in tests/unit/recommendationEngine.test.js
-- [ ] T021 [US1] Write integration test for discovery flow (full choice→explanation→next round) in tests/integration/discovery-flow.test.js
-- [ ] T022 [US1] Write E2E test for keyboard navigation (Tab, Enter, A/B keys, Escape) in tests/e2e/keyboard-navigation.spec.js
+- [x] T017 [P] [US1] Write unit test for validators.js (10-char minimum validation) in tests/unit/validators.test.js
+- [x] T018 [P] [US1] Write unit test for sessionManager.js (create, load, save, validate session) in tests/unit/sessionManager.test.js
+- [x] T019 [P] [US1] Write unit test for imageLoader.js (retry logic, exponential backoff) in tests/unit/imageLoader.test.js
+- [x] T020 [P] [US1] Write unit test for recommendationEngine.js (calculateStyleScores, isConfident, getTopStyles) in tests/unit/recommendationEngine.test.js
+- [x] T021 [US1] Write integration test for discovery flow (full choice→explanation→next round) in tests/integration/discovery-flow.test.js
+- [x] T022 [US1] Write E2E test for keyboard navigation (Tab, Enter, A/B keys, Escape) in tests/e2e/keyboard-navigation.spec.js
 
 **Run Tests (should fail - Red phase)**:
 ```bash
@@ -106,10 +106,10 @@ npm run test:e2e    # E2E tests fail (app doesn't exist yet)
 
 #### Core Services Layer
 
-- [ ] T023 [P] [US1] Implement src/lib/validators.js with validateExplanation(text) function
-- [ ] T024 [P] [US1] Implement src/services/sessionManager.js with createSession(), loadSession(), saveSession(), isSessionValid()
-- [ ] T025 [P] [US1] Implement src/services/imageLoader.js with loadImage(url, maxRetries=3) and exponential backoff
-- [ ] T026 [US1] Implement src/services/recommendationEngine.js with calculateStyleScores(choices), isConfidentRecommendation(), getTopStyles()
+- [x] T023 [P] [US1] Implement src/lib/validators.js with validateExplanation(text) function
+- [x] T024 [P] [US1] Implement src/services/sessionManager.js with createSession(), loadSession(), saveSession(), isSessionValid()
+- [x] T025 [P] [US1] Implement src/services/imageLoader.js with loadImage(url, maxRetries=3) and exponential backoff
+- [x] T026 [US1] Implement src/services/recommendationEngine.js with calculateStyleScores(choices), isConfidentRecommendation(), getTopStyles()
 
 **Run Tests (should start passing)**:
 ```bash
@@ -118,8 +118,8 @@ npm run test -- tests/unit/  # Unit tests should pass now
 
 #### Data Layer
 
-- [ ] T027 [P] [US1] Create UUID utility function in src/lib/utils.js for session IDs
-- [ ] T028 [US1] Add extractKeywords(explanation) to recommendationEngine.js per data-model.md
+- [x] T027 [P] [US1] Create UUID utility function in src/lib/utils.js for session IDs
+- [x] T028 [US1] Add extractKeywords(explanation) to recommendationEngine.js per data-model.md
 
 #### UI Components Layer
 

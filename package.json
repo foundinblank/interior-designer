@@ -1,0 +1,40 @@
+{
+  "name": "interior-designer",
+  "version": "1.0.0",
+  "description": "Interior Style Discovery App - A keyboard-accessible web app for discovering your interior design style",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "lint": "eslint src tests",
+    "format": "prettier --write \"src/**/*.{js,css,html}\" \"tests/**/*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foundinblank/interior-designer.git"
+  },
+  "keywords": ["interior-design", "style-discovery", "accessibility", "keyboard-navigation"],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/foundinblank/interior-designer/issues"
+  },
+  "homepage": "https://github.com/foundinblank/interior-designer#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@vitest/ui": "^3.2.4",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "happy-dom": "^20.0.1",
+    "jsdom": "^27.0.0",
+    "playwright": "^1.56.0",
+    "prettier": "^3.6.2",
+    "vite": "^7.1.10",
+    "vitest": "^3.2.4"
+  }
+}

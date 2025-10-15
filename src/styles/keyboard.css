@@ -1,0 +1,122 @@
+/* Keyboard Navigation and Focus Styles */
+
+/* Focus indicator for all interactive elements */
+:focus {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+  transition: outline var(--transition-fast);
+}
+
+/* Remove default outline and replace with custom */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Focus-visible for keyboard navigation (when user tabs) */
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px var(--color-focus-ring);
+}
+
+/* Interactive elements focus styles */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px var(--color-focus-ring);
+}
+
+/* Image selection focus (for A/B choice images) */
+.image-pair__option:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px var(--color-focus-ring);
+  transform: scale(1.02);
+  transition: transform var(--transition-fast);
+}
+
+/* Button focus states */
+.btn:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px var(--color-focus-ring);
+}
+
+/* Form input focus states */
+input[type="text"]:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-color: var(--color-focus);
+  box-shadow: 0 0 0 4px var(--color-focus-ring);
+}
+
+/* Keyboard-only indicators */
+body.keyboard-nav :focus {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px var(--color-focus-ring);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :focus-visible {
+    outline-width: 4px;
+    outline-offset: 5px;
+  }
+}
+
+/* Reduced motion support (accessibility) */
+@media (prefers-reduced-motion: reduce) {
+  :focus,
+  :focus-visible {
+    transition: none;
+  }
+
+  .image-pair__option:focus-visible {
+    transform: none;
+  }
+}
+
+/* Keyboard navigation helper class */
+.keyboard-focusable {
+  cursor: pointer;
+}
+
+.keyboard-focusable:hover {
+  opacity: 0.9;
+  transition: opacity var(--transition-fast);
+}
+
+.keyboard-focusable:active {
+  opacity: 0.8;
+}
+
+/* Skip to content link focus */
+.skip-to-content:focus {
+  outline: 3px solid white;
+  outline-offset: 2px;
+}
+
+/* Focus trap container (for modals) */
+.focus-trap {
+  isolation: isolate;
+}
+
+/* Disabled state (no focus) */
+[disabled],
+[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+[disabled]:focus,
+[aria-disabled="true"]:focus {
+  outline: none;
+  box-shadow: none;
+}

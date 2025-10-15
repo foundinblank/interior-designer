@@ -1,0 +1,42 @@
+{
+  "env": {
+    "browser": true,
+    "es2022": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "prefer-const": "error",
+    "no-var": "error",
+    "object-shorthand": "error",
+    "prefer-arrow-callback": "error",
+    "prefer-template": "error",
+    "template-curly-spacing": "error",
+    "arrow-spacing": "error",
+    "comma-dangle": ["error", "always-multiline"],
+    "semi": ["error", "never"],
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "eqeqeq": ["error", "always"]
+  },
+  "overrides": [
+    {
+      "files": ["tests/**/*.js", "tests/**/*.spec.js"],
+      "env": {
+        "vitest/globals": true
+      },
+      "plugins": ["vitest"],
+      "rules": {
+        "vitest/expect-expect": "error"
+      }
+    }
+  ]
+}
