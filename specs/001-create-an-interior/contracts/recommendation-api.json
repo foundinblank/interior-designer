@@ -1,0 +1,421 @@
+{
+  "title": "Interior Style Discovery API Contracts",
+  "description": "Client-side API contracts for session management, recommendation engine, and image handling",
+  "version": "1.0.0",
+  "definitions": {
+    "Session": {
+      "type": "object",
+      "required": ["id", "startTime", "currentRound", "phase", "choices", "styleScores", "isValid"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique session identifier"
+        },
+        "startTime": {
+          "type": "integer",
+          "description": "Unix timestamp in milliseconds",
+          "minimum": 0
+        },
+        "currentRound": {
+          "type": "integer",
+          "description": "Current round number (1-based)",
+          "minimum": 1,
+          "maximum": 15
+        },
+        "phase": {
+          "type": "string",
+          "enum": ["discovery", "recommendations", "alternatives", "complete"],
+          "description": "Current phase of the user journey"
+        },
+        "choices": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Choice" },
+          "description": "Array of completed choices"
+        },
+        "styleScores": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "description": "Map of style ID to confidence score"
+        },
+        "recommendedStyle": {
+          "type": ["string", "null"],
+          "description": "ID of recommended style (null until determined)"
+        },
+        "secondBestStyle": {
+          "type": ["string", "null"],
+          "description": "ID of second-best style for alternatives"
+        },
+        "isValid": {
+          "type": "boolean",
+          "description": "True if session is less than 24 hours old"
+        }
+      }
+    },
+    "Choice": {
+      "type": "object",
+      "required": ["round", "selectedImageId", "rejectedImageId", "selectedImageStyles", "explanation", "keywords", "timestamp"],
+      "properties": {
+        "round": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 15
+        },
+        "selectedImageId": {
+          "type": "string",
+          "description": "ID of the chosen image"
+        },
+        "rejectedImageId": {
+          "type": "string",
+          "description": "ID of the non-chosen image"
+        },
+        "selectedImageStyles": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "Style tags from selected image"
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 500,
+          "description": "User's explanation for choice"
+        },
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Extracted design keywords"
+        },
+        "timestamp": {
+          "type": "integer",
+          "description": "Unix timestamp when choice submitted",
+          "minimum": 0
+        }
+      }
+    },
+    "Image": {
+      "type": "object",
+      "required": ["id", "url", "thumbnail", "primaryStyle", "secondaryStyles", "colors", "furniture", "lighting", "attributes", "alt"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+$",
+          "description": "Unique image identifier"
+        },
+        "url": {
+          "type": "string",
+          "pattern": "^/images/",
+          "description": "Full image path"
+        },
+        "thumbnail": {
+          "type": "string",
+          "pattern": "^/images/",
+          "description": "Thumbnail image path"
+        },
+        "primaryStyle": {
+          "type": "string",
+          "description": "Main style category"
+        },
+        "secondaryStyles": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Additional style tags"
+        },
+        "colors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "Color palette tags"
+        },
+        "furniture": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Furniture types present"
+        },
+        "lighting": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Lighting characteristics"
+        },
+        "attributes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Other visual attributes"
+        },
+        "alt": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Accessibility alt text"
+        },
+        "loadStatus": {
+          "type": "string",
+          "enum": ["pending", "loading", "loaded", "error"],
+          "description": "Runtime loading state (not persisted)"
+        },
+        "retryCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3,
+          "description": "Number of load retry attempts (runtime only)"
+        }
+      }
+    },
+    "Style": {
+      "type": "object",
+      "required": ["id", "displayName", "description", "keywords", "relatedStyles", "imageCount"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z-]+$",
+          "description": "Unique style identifier"
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable style name"
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Brief style description"
+        },
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "Synonyms and related terms"
+        },
+        "relatedStyles": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "IDs of similar styles"
+        },
+        "imageCount": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of images with this primary style"
+        }
+      }
+    },
+    "RecommendationSet": {
+      "type": "object",
+      "required": ["styleId", "styleName", "description", "images", "confidence", "generatedAt"],
+      "properties": {
+        "styleId": {
+          "type": "string",
+          "description": "ID of recommended style"
+        },
+        "styleName": {
+          "type": "string",
+          "description": "Display name of style"
+        },
+        "description": {
+          "type": "string",
+          "description": "Style description"
+        },
+        "images": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Image" },
+          "minItems": 1,
+          "maxItems": 10,
+          "description": "Recommended images"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Recommendation confidence score"
+        },
+        "generatedAt": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Unix timestamp when generated"
+        }
+      }
+    }
+  },
+  "services": {
+    "SessionManager": {
+      "description": "Manages session lifecycle and localStorage persistence",
+      "methods": {
+        "createSession": {
+          "returns": { "$ref": "#/definitions/Session" },
+          "description": "Creates a new session with initial state"
+        },
+        "loadSession": {
+          "returns": { "$ref": "#/definitions/Session", "nullable": true },
+          "description": "Loads session from localStorage, returns null if invalid/missing"
+        },
+        "saveSession": {
+          "parameters": {
+            "session": { "$ref": "#/definitions/Session" }
+          },
+          "returns": { "type": "boolean" },
+          "description": "Saves session to localStorage, returns success status"
+        },
+        "clearSession": {
+          "returns": { "type": "void" },
+          "description": "Removes session from localStorage"
+        },
+        "isSessionValid": {
+          "parameters": {
+            "session": { "$ref": "#/definitions/Session" }
+          },
+          "returns": { "type": "boolean" },
+          "description": "Checks if session is less than 24 hours old"
+        },
+        "addChoice": {
+          "parameters": {
+            "session": { "$ref": "#/definitions/Session" },
+            "choice": { "$ref": "#/definitions/Choice" }
+          },
+          "returns": { "$ref": "#/definitions/Session" },
+          "description": "Adds choice to session and increments round"
+        }
+      }
+    },
+    "RecommendationEngine": {
+      "description": "Analyzes choices and generates style recommendations",
+      "methods": {
+        "calculateStyleScores": {
+          "parameters": {
+            "choices": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Choice" }
+            }
+          },
+          "returns": {
+            "type": "object",
+            "additionalProperties": { "type": "number" }
+          },
+          "description": "Calculates weighted confidence scores for each style"
+        },
+        "isConfidentRecommendation": {
+          "parameters": {
+            "styleScores": {
+              "type": "object",
+              "additionalProperties": { "type": "number" }
+            },
+            "minRounds": { "type": "integer", "default": 6 }
+          },
+          "returns": { "type": "boolean" },
+          "description": "Determines if top score exceeds threshold for recommendation"
+        },
+        "getTopStyles": {
+          "parameters": {
+            "styleScores": {
+              "type": "object",
+              "additionalProperties": { "type": "number" }
+            },
+            "count": { "type": "integer", "default": 2 }
+          },
+          "returns": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": "Returns top N style IDs by score"
+        },
+        "generateRecommendationSet": {
+          "parameters": {
+            "styleId": { "type": "string" },
+            "excludeImageIds": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "count": { "type": "integer", "default": 10 }
+          },
+          "returns": { "$ref": "#/definitions/RecommendationSet" },
+          "description": "Generates set of recommended images for style"
+        },
+        "extractKeywords": {
+          "parameters": {
+            "explanation": { "type": "string" }
+          },
+          "returns": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": "Extracts design-related keywords from explanation text"
+        }
+      }
+    },
+    "ImageLoader": {
+      "description": "Handles image loading with retry logic and placeholder fallbacks",
+      "methods": {
+        "loadImage": {
+          "parameters": {
+            "url": { "type": "string" },
+            "maxRetries": { "type": "integer", "default": 3 }
+          },
+          "returns": {
+            "type": "object",
+            "properties": {
+              "success": { "type": "boolean" },
+              "url": { "type": "string" },
+              "error": { "type": "string", "optional": true }
+            }
+          },
+          "description": "Loads image with exponential backoff retry"
+        },
+        "preloadImagePair": {
+          "parameters": {
+            "imageA": { "$ref": "#/definitions/Image" },
+            "imageB": { "$ref": "#/definitions/Image" }
+          },
+          "returns": {
+            "type": "object",
+            "properties": {
+              "imageA": { "type": "object" },
+              "imageB": { "type": "object" }
+            }
+          },
+          "description": "Preloads both images in parallel"
+        },
+        "getPlaceholderImage": {
+          "returns": { "type": "string" },
+          "description": "Returns data URI or path for placeholder image"
+        }
+      }
+    },
+    "Validators": {
+      "description": "Input validation functions",
+      "methods": {
+        "validateExplanation": {
+          "parameters": {
+            "text": { "type": "string" }
+          },
+          "returns": {
+            "type": "object",
+            "properties": {
+              "valid": { "type": "boolean" },
+              "error": { "type": "string", "optional": true }
+            }
+          },
+          "description": "Validates explanation meets 10-character minimum"
+        },
+        "validateImageId": {
+          "parameters": {
+            "imageId": { "type": "string" },
+            "availableImages": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Image" }
+            }
+          },
+          "returns": { "type": "boolean" },
+          "description": "Validates image ID exists in available images"
+        },
+        "sanitizeInput": {
+          "parameters": {
+            "text": { "type": "string" }
+          },
+          "returns": { "type": "string" },
+          "description": "Sanitizes user input (trim, remove HTML)"
+        }
+      }
+    }
+  }
+}
