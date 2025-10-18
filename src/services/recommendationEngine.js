@@ -132,30 +132,49 @@ export function getTopStyles(styleScores, count = 2) {
 }
 
 /**
+ * Gets the second best style (fallback/alternative recommendation)
+ * @param {Object} styleScores - Map of style to confidence score
+ * @returns {string|null} Second best style ID or null if not available
+ */
+export function getSecondBestStyle(styleScores) {
+  const topTwo = getTopStyles(styleScores, 2)
+  return topTwo.length >= 2 ? topTwo[1] : null
+}
+
+/**
  * Generates a recommendation set for a given style
  * @param {string} styleId - Style ID to generate recommendations for
- * @param {Image[]} allImages - All available images
  * @param {string[]} excludeImageIds - Image IDs to exclude (already shown)
  * @param {number} count - Number of recommendations to generate (default: 10)
- * @returns {RecommendationSet} Recommendation set object
+ * @param {Image[]} allImages - All available images
+ * @returns {Image[]} Array of recommended images
  */
-export function generateRecommendationSet(styleId, allImages, excludeImageIds = [], count = 10) {
-  // Filter images matching the style
-  const matchingImages = allImages.filter(img => {
-    const isMatching = img.primaryStyle === styleId || img.secondaryStyles.includes(styleId)
+export function generateRecommendationSet(styleId, excludeImageIds = [], count = 10, allImages) {
+  // Filter images matching the style (primary or secondary)
+  // Separate primary and secondary matches for prioritization
+  const primaryMatches = []
+  const secondaryMatches = []
+
+  allImages.forEach(img => {
     const notExcluded = !excludeImageIds.includes(img.id)
-    return isMatching && notExcluded
+    if (!notExcluded) return
+
+    if (img.primaryStyle === styleId) {
+      primaryMatches.push(img)
+    } else if (img.secondaryStyles.includes(styleId)) {
+      secondaryMatches.push(img)
+    }
   })
 
-  // Shuffle and take top N
-  const shuffled = shuffleArray(matchingImages)
-  const selectedImages = shuffled.slice(0, count)
+  // Shuffle primary and secondary separately, then concatenate
+  // This ensures primary matches appear first
+  const shuffledPrimary = shuffleArray(primaryMatches)
+  const shuffledSecondary = shuffleArray(secondaryMatches)
 
-  return {
-    styleId,
-    images: selectedImages,
-    count: selectedImages.length,
-  }
+  // Combine and take top N
+  const selectedImages = [...shuffledPrimary, ...shuffledSecondary].slice(0, count)
+
+  return selectedImages
 }
 
 /**

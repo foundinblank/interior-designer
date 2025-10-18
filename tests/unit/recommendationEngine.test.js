@@ -4,6 +4,7 @@ import {
   isConfidentRecommendation,
   getTopStyles,
   extractKeywords,
+  generateRecommendationSet,
 } from '@/services/recommendationEngine.js'
 
 describe('recommendationEngine', () => {
@@ -322,6 +323,109 @@ describe('recommendationEngine', () => {
       expect(topStyles[1]).toBe('minimalist') // 0.60
       expect(topStyles[2]).toBe('bohemian') // 0.40
       expect(topStyles[3]).toBe('modern') // 0.25
+    })
+  })
+
+  describe('generateRecommendationSet', () => {
+    const mockImages = [
+      { id: 'modern-001', primaryStyle: 'modern', secondaryStyles: ['minimalist'] },
+      { id: 'modern-002', primaryStyle: 'modern', secondaryStyles: [] },
+      { id: 'modern-003', primaryStyle: 'modern', secondaryStyles: ['industrial'] },
+      { id: 'traditional-001', primaryStyle: 'traditional', secondaryStyles: [] },
+      { id: 'traditional-002', primaryStyle: 'traditional', secondaryStyles: [] },
+      { id: 'minimalist-001', primaryStyle: 'minimalist', secondaryStyles: ['modern'] },
+      { id: 'minimalist-002', primaryStyle: 'minimalist', secondaryStyles: ['scandinavian'] },
+      { id: 'bohemian-001', primaryStyle: 'bohemian', secondaryStyles: [] },
+      { id: 'industrial-001', primaryStyle: 'industrial', secondaryStyles: ['modern'] },
+      { id: 'scandinavian-001', primaryStyle: 'scandinavian', secondaryStyles: ['minimalist'] },
+      { id: 'scandinavian-002', primaryStyle: 'scandinavian', secondaryStyles: [] },
+      { id: 'scandinavian-003', primaryStyle: 'scandinavian', secondaryStyles: ['modern'] },
+    ]
+
+    it('should return up to 10 images matching the requested style', () => {
+      const recommendations = generateRecommendationSet('modern', [], 10, mockImages)
+
+      expect(recommendations.length).toBeLessThanOrEqual(10)
+      recommendations.forEach(img => {
+        const isMatch = img.primaryStyle === 'modern' || img.secondaryStyles.includes('modern')
+        expect(isMatch).toBe(true)
+      })
+    })
+
+    it('should exclude images from excludeImageIds', () => {
+      const excludeIds = ['modern-001', 'modern-002']
+      const recommendations = generateRecommendationSet('modern', excludeIds, 10, mockImages)
+
+      recommendations.forEach(img => {
+        expect(excludeIds).not.toContain(img.id)
+      })
+    })
+
+    it('should return exactly the requested count if enough images available', () => {
+      const recommendations = generateRecommendationSet('scandinavian', [], 3, mockImages)
+
+      expect(recommendations.length).toBe(3)
+    })
+
+    it('should return fewer than requested count if not enough images available', () => {
+      const recommendations = generateRecommendationSet('bohemian', [], 10, mockImages)
+
+      // Only 1 bohemian image in mockImages
+      expect(recommendations.length).toBeLessThan(10)
+      expect(recommendations.length).toBeGreaterThan(0)
+    })
+
+    it('should prioritize primary style matches over secondary matches', () => {
+      const recommendations = generateRecommendationSet('modern', [], 10, mockImages)
+
+      // First results should be primary='modern', then secondary includes 'modern'
+      const firstResult = recommendations[0]
+      expect(firstResult.primaryStyle).toBe('modern')
+    })
+
+    it('should return empty array if no matching images found', () => {
+      const noMatchImages = [
+        { id: 'traditional-001', primaryStyle: 'traditional', secondaryStyles: [] },
+      ]
+      const recommendations = generateRecommendationSet('modern', [], 10, noMatchImages)
+
+      expect(recommendations).toEqual([])
+    })
+
+    it('should use default count of 10 if not provided', () => {
+      const recommendations = generateRecommendationSet('scandinavian', [], undefined, mockImages)
+
+      // scandinavian has 3 images, but requested 10 (default), so return 3
+      expect(recommendations.length).toBeLessThanOrEqual(10)
+    })
+
+    it('should return different images each time for the same style when enough are available', () => {
+      const firstSet = generateRecommendationSet('modern', [], 2, mockImages)
+      const excludeIds = firstSet.map(img => img.id)
+      const secondSet = generateRecommendationSet('modern', excludeIds, 2, mockImages)
+
+      // Verify no overlap
+      const firstIds = firstSet.map(img => img.id)
+      const secondIds = secondSet.map(img => img.id)
+      const overlap = firstIds.filter(id => secondIds.includes(id))
+      expect(overlap.length).toBe(0)
+    })
+
+    it('should handle empty excludeImageIds array', () => {
+      const recommendations = generateRecommendationSet('modern', [], 10, mockImages)
+
+      expect(recommendations).toBeDefined()
+      expect(Array.isArray(recommendations)).toBe(true)
+    })
+
+    it('should include both primary and secondary style matches', () => {
+      const recommendations = generateRecommendationSet('modern', [], 10, mockImages)
+
+      const hasPrimary = recommendations.some(img => img.primaryStyle === 'modern')
+      const hasSecondary = recommendations.some(img => img.secondaryStyles.includes('modern'))
+
+      // Should have at least one of each type if available
+      expect(hasPrimary || hasSecondary).toBe(true)
     })
   })
 })

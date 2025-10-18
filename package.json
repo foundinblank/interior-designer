@@ -12,7 +12,9 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "lint": "eslint src tests",
-    "format": "prettier --write \"src/**/*.{js,css,html}\" \"tests/**/*.js\""
+    "format": "prettier --write \"src/**/*.{js,css,html}\" \"tests/**/*.js\"",
+    "validate-images": "node scripts/validate-images.js",
+    "predev": "node scripts/validate-images.js"
   },
   "repository": {
     "type": "git",

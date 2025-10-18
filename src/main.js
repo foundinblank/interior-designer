@@ -3,12 +3,16 @@
  */
 
 import { createSession, loadSession, saveSession, addChoice } from './services/sessionManager.js'
-import { calculateStyleScores, isConfidentRecommendation, getTopStyles, extractKeywords } from './services/recommendationEngine.js'
+import { calculateStyleScores, isConfidentRecommendation, getTopStyles, extractKeywords, generateRecommendationSet, getSecondBestStyle } from './services/recommendationEngine.js'
 import { validateExplanation } from './lib/validators.js'
+import { analyzeExplanation } from './services/llmAnalyzer.js'
+import { showSettingsModal } from './components/SettingsModal.js'
+import { showConfirmModal } from './components/ConfirmModal.js'
+import { getApiKey } from './lib/apiKeyStorage.js'
 
-// Load app data
-const stylesData = await fetch('./data/styles.json').then(r => r.json())
-const imagesData = await fetch('./data/images.json').then(r => r.json())
+// Import app data as modules (Vite handles this)
+import stylesData from './data/styles.json'
+import imagesData from './data/images.json'
 
 const styles = stylesData.styles
 const images = imagesData.images
@@ -74,6 +78,8 @@ function renderApp() {
     renderDiscoveryPhase(appContent)
   } else if (session.phase === 'recommendations') {
     renderRecommendationsPhase(appContent)
+  } else if (session.phase === 'alternatives') {
+    renderAlternativesPhase(appContent)
   } else if (session.phase === 'complete') {
     renderCompletePhase(appContent)
   }
@@ -87,6 +93,11 @@ function renderDiscoveryPhase(container) {
   const progress = Math.min((session.currentRound / 12) * 100, 100)
 
   container.innerHTML = `
+    <!-- Settings button -->
+    <button id="settings-btn" class="settings-btn" aria-label="Settings" title="Configure API key for enhanced analysis">
+      ⚙️
+    </button>
+
     <!-- Progress bar -->
     <div class="progress-bar">
       <div class="progress-fill" style="width: ${progress}%"></div>
@@ -96,7 +107,7 @@ function renderDiscoveryPhase(container) {
     <div class="round-number">Round ${session.currentRound} of ~12</div>
 
     <!-- Question -->
-    <div class="question-container">
+    <div class="question-container" id="image-selection-container">
       <div class="question-text">
         Which living room speaks to you?
         <div class="question-subtitle">Press A or B, or click to choose</div>
@@ -118,7 +129,7 @@ function renderDiscoveryPhase(container) {
     </div>
 
     <!-- Explanation form (hidden initially) -->
-    <div class="question-container" id="explanation-container" style="display: none;">
+    <div class="question-container question-container-hidden" id="explanation-container">
       <div class="question-text">
         What drew you to that choice?
         <div class="question-subtitle">Tell us what caught your eye (at least 10 characters)</div>
@@ -147,6 +158,7 @@ function renderDiscoveryPhase(container) {
   })
 
   document.getElementById('submit-explanation')?.addEventListener('click', handleSubmitExplanation)
+  document.getElementById('settings-btn')?.addEventListener('click', showSettingsModal)
 }
 
 function handleImageSelection(button) {
@@ -158,27 +170,28 @@ function handleImageSelection(button) {
   currentImagePair.selectedImageId = imageId
   currentImagePair.rejectedImageId = choice === 'A' ? currentImagePair.imageB.id : currentImagePair.imageA.id
 
-  // Hide image selection with fade out
-  const imageContainer = document.querySelector('.question-container:first-of-type')
-  imageContainer.style.animation = 'fadeOut 0.3s ease'
+  // Hide image selection and show explanation in one smooth transition
+  const imageContainer = document.getElementById('image-selection-container')
+  const explanationContainer = document.getElementById('explanation-container')
+
+  // Add fade-out class to image container
+  imageContainer.classList.add('question-container-hidden')
 
   setTimeout(() => {
-    imageContainer.style.display = 'none'
-
-    // Show explanation form
-    const explanationContainer = document.getElementById('explanation-container')
-    explanationContainer.style.display = 'flex'
+    // Remove fade-out class from explanation container to show it
+    explanationContainer.classList.remove('question-container-hidden')
 
     // Focus on textarea
     setTimeout(() => {
       document.getElementById('explanation')?.focus()
     }, 100)
-  }, 300)
+  }, 400)
 }
 
-function handleSubmitExplanation() {
+async function handleSubmitExplanation() {
   const explanationEl = document.getElementById('explanation')
   const errorEl = document.getElementById('explanation-error')
+  const submitBtn = document.getElementById('submit-explanation')
   const explanation = explanationEl.value
 
   // Validate
@@ -191,50 +204,86 @@ function handleSubmitExplanation() {
 
   errorEl.style.display = 'none'
 
-  // Extract keywords
-  const keywords = extractKeywords(explanation)
-
-  // Get selected image
-  const selectedImage = images.find(img => img.id === currentImagePair.selectedImageId)
-
-  // Create choice
-  const choice = {
-    round: session.currentRound,
-    selectedImageId: currentImagePair.selectedImageId,
-    rejectedImageId: currentImagePair.rejectedImageId,
-    selectedImageStyles: [selectedImage.primaryStyle, ...selectedImage.secondaryStyles],
-    explanation,
-    keywords,
-    timestamp: Date.now(),
+  // Disable submit button during analysis
+  if (submitBtn) {
+    submitBtn.disabled = true
+    submitBtn.textContent = 'Analyzing...'
   }
 
-  // Add choice to session
-  session = addChoice(session, choice)
+  try {
+    // Get API key if available
+    const apiKey = getApiKey()
 
-  // Calculate scores
-  session.styleScores = calculateStyleScores(session.choices)
+    // Use LLM analyzer (with automatic fallback to keywords if no API key)
+    const analysis = await analyzeExplanation(explanation, apiKey)
 
-  // Check if ready for recommendation
-  if (isConfidentRecommendation(session.styleScores, session.currentRound - 1)) {
-    const topStyles = getTopStyles(session.styleScores, 2)
-    session.recommendedStyle = topStyles[0]
-    session.secondBestStyle = topStyles[1]
-    session.phase = 'recommendations'
+    // Extract keywords and enhanced data
+    const keywords = analysis.keywords
+    const emotions = analysis.emotions || []
+    const styleIndicators = analysis.style_indicators || []
+
+    // Get selected image
+    const selectedImage = images.find(img => img.id === currentImagePair.selectedImageId)
+
+    // Create choice with enhanced analysis
+    const choice = {
+      round: session.currentRound,
+      selectedImageId: currentImagePair.selectedImageId,
+      rejectedImageId: currentImagePair.rejectedImageId,
+      selectedImageStyles: [selectedImage.primaryStyle, ...selectedImage.secondaryStyles],
+      explanation,
+      keywords,
+      emotions, // Enhanced by LLM
+      styleIndicators, // Enhanced by LLM
+      analysisSource: analysis.source, // Track whether LLM or keyword extraction was used
+      timestamp: Date.now(),
+    }
+
+    // Add choice to session
+    session = addChoice(session, choice)
+
+    // Calculate scores
+    session.styleScores = calculateStyleScores(session.choices)
+
+    // Check if ready for recommendation
+    if (isConfidentRecommendation(session.styleScores, session.currentRound - 1)) {
+      const topStyles = getTopStyles(session.styleScores, 2)
+      session.recommendedStyle = topStyles[0]
+      session.secondBestStyle = topStyles[1]
+      session.phase = 'recommendations'
+    }
+
+    // Save session
+    saveSession(session)
+
+    // Re-render
+    renderApp()
+  } catch (error) {
+    console.error('Error analyzing explanation:', error)
+    errorEl.textContent = 'An error occurred. Please try again.'
+    errorEl.style.display = 'block'
+
+    // Re-enable submit button
+    if (submitBtn) {
+      submitBtn.disabled = false
+      submitBtn.textContent = 'Continue →'
+    }
   }
-
-  // Save session
-  saveSession(session)
-
-  // Re-render
-  renderApp()
 }
 
 function renderRecommendationsPhase(container) {
   const style = styles.find(s => s.id === session.recommendedStyle)
-  const recommendedImages = validImages.filter(img =>
-    img.primaryStyle === session.recommendedStyle ||
-    img.secondaryStyles.includes(session.recommendedStyle)
-  ).slice(0, 10)
+
+  // Get images already shown during discovery
+  const shownImageIds = session.choices.map(c => c.selectedImageId)
+
+  // Generate recommendation set using the new function
+  const recommendedImages = generateRecommendationSet(
+    session.recommendedStyle,
+    shownImageIds,
+    10,
+    validImages
+  )
 
   container.innerHTML = `
     <div class="recommendations-phase">
@@ -244,7 +293,7 @@ function renderRecommendationsPhase(container) {
       <div class="recommendation-grid">
         ${recommendedImages.map(img => `
           <div class="recommendation-image">
-            <img src="${img.url}" alt="${img.alt || 'Recommended living room'}" />
+            <img src="${img.url}" alt="${img.alt || 'Recommended living room'}" loading="lazy" />
           </div>
         `).join('')}
       </div>
@@ -264,7 +313,93 @@ function renderRecommendationsPhase(container) {
   })
 
   document.getElementById('reject-style')?.addEventListener('click', () => {
-    alert('Alternative styles or restart functionality would be implemented here (Phase 4)')
+    handleRejection()
+  })
+}
+
+async function handleRejection() {
+  // Get second best style
+  const alternativeStyle = getSecondBestStyle(session.styleScores)
+
+  if (alternativeStyle) {
+    // Show alternative style
+    session.recommendedStyle = alternativeStyle
+    session.phase = 'alternatives'
+    saveSession(session)
+    renderAlternativesPhase(document.getElementById('app-content'))
+  } else {
+    // No alternative available, offer restart
+    const confirmed = await showConfirmModal({
+      title: 'No Alternative Styles',
+      message: 'We don\'t have enough data to suggest an alternative style. Would you like to start over and discover your style again?',
+      confirmText: 'Start Over',
+      cancelText: 'Stay Here',
+      type: 'info'
+    })
+
+    if (confirmed) {
+      session = createSession()
+      saveSession(session)
+      renderApp()
+    }
+  }
+}
+
+function renderAlternativesPhase(container) {
+  const style = styles.find(s => s.id === session.recommendedStyle)
+
+  // Get images already shown
+  const shownImageIds = session.choices.map(c => c.selectedImageId)
+
+  // Generate alternative recommendations
+  const recommendedImages = generateRecommendationSet(
+    session.recommendedStyle,
+    shownImageIds,
+    10,
+    validImages
+  )
+
+  container.innerHTML = `
+    <div class="recommendations-phase">
+      <h1>How about: ${style?.displayName}?</h1>
+      <p>${style?.description}</p>
+
+      <div class="recommendation-grid">
+        ${recommendedImages.map(img => `
+          <div class="recommendation-image">
+            <img src="${img.url}" alt="${img.alt || 'Alternative living room recommendation'}" loading="lazy" />
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="confirmation-prompt">
+        <p>Is this more your style?</p>
+        <button id="confirm-alternative" class="btn btn-primary">Yes, I love it!</button>
+        <button id="restart-from-alternatives" class="btn btn-secondary">Start Over</button>
+      </div>
+    </div>
+  `
+
+  document.getElementById('confirm-alternative')?.addEventListener('click', () => {
+    session.phase = 'complete'
+    saveSession(session)
+    renderApp()
+  })
+
+  document.getElementById('restart-from-alternatives')?.addEventListener('click', async () => {
+    const confirmed = await showConfirmModal({
+      title: 'Start Over?',
+      message: 'Are you sure you want to restart the style discovery process? Your current progress will be lost.',
+      confirmText: 'Start Over',
+      cancelText: 'Cancel',
+      type: 'warning'
+    })
+
+    if (confirmed) {
+      session = createSession()
+      saveSession(session)
+      renderApp()
+    }
   })
 }
 
@@ -272,18 +407,34 @@ function renderCompletePhase(container) {
   const style = styles.find(s => s.id === session.recommendedStyle)
 
   container.innerHTML = `
-    <div class="complete-phase">
-      <h1>✓ Style Discovered!</h1>
-      <p>Your interior design style is: <strong>${style?.displayName}</strong></p>
-      <p>${style?.description}</p>
-      <button id="restart" class="btn btn-primary">Discover Another Style</button>
+    <div class="question-container">
+      <div class="complete-phase">
+        <h1 style="color: white; font-size: 3rem; margin-bottom: var(--spacing-lg);">✓ Style Discovered!</h1>
+        <p style="color: white; font-size: 1.5rem; margin-bottom: var(--spacing-md);">
+          Your interior design style is: <strong>${style?.displayName}</strong>
+        </p>
+        <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.125rem; margin-bottom: var(--spacing-xxl); max-width: 600px;">
+          ${style?.description}
+        </p>
+        <button id="restart" class="typeform-submit">Start Over</button>
+      </div>
     </div>
   `
 
-  document.getElementById('restart')?.addEventListener('click', () => {
-    session = createSession()
-    saveSession(session)
-    renderApp()
+  document.getElementById('restart')?.addEventListener('click', async () => {
+    const confirmed = await showConfirmModal({
+      title: 'Start a New Discovery?',
+      message: 'Would you like to discover another style? Your current results will be cleared.',
+      confirmText: 'Yes, Start Over',
+      cancelText: 'Stay Here',
+      type: 'info'
+    })
+
+    if (confirmed) {
+      session = createSession()
+      saveSession(session)
+      renderApp()
+    }
   })
 }
 
@@ -306,10 +457,13 @@ function setupKeyboardShortcuts() {
     const isTyping = e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT'
 
     // Shift+Enter to submit explanation
-    if (e.key === 'Enter' && e.shiftKey && isTyping) {
-      e.preventDefault()
-      document.getElementById('submit-explanation')?.click()
-      return
+    if (e.key === 'Enter' && e.shiftKey) {
+      const submitBtn = document.getElementById('submit-explanation')
+      if (submitBtn && isTyping) {
+        e.preventDefault()
+        submitBtn.click()
+        return
+      }
     }
 
     // Don't process other shortcuts while typing

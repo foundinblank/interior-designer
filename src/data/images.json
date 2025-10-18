@@ -2,8 +2,8 @@
   "images": [
     {
       "id": "modern-001",
-      "url": "https://images.unsplash.com/photo-owVINZxTUHA?w=800",
-      "thumbnail": "https://images.unsplash.com/photo-owVINZxTUHA?w=400",
+      "url": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80",
+      "thumbnail": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=80",
       "primaryStyle": "modern",
       "secondaryStyles": ["minimalist"],
       "colors": ["blue", "white", "neutral"],
@@ -14,8 +14,8 @@
     },
     {
       "id": "modern-002",
-      "url": "https://images.unsplash.com/photo-Tk8ji91xeh0?w=800",
-      "thumbnail": "https://images.unsplash.com/photo-Tk8ji91xeh0?w=400",
+      "url": "https://images.unsplash.com/photo-1556020685-ae41abfc9365?w=800&q=80",
+      "thumbnail": "https://images.unsplash.com/photo-1556020685-ae41abfc9365?w=400&q=80",
       "primaryStyle": "modern",
       "secondaryStyles": [],
       "colors": ["gray", "white"],
@@ -26,8 +26,8 @@
     },
     {
       "id": "traditional-001",
-      "url": "https://images.unsplash.com/photo-BYVGHk2Mg1E?w=800",
-      "thumbnail": "https://images.unsplash.com/photo-BYVGHk2Mg1E?w=400",
+      "url": "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&q=80",
+      "thumbnail": "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=400&q=80",
       "primaryStyle": "traditional",
       "secondaryStyles": [],
       "colors": ["brown", "cream", "warm"],
@@ -38,8 +38,8 @@
     },
     {
       "id": "traditional-002",
-      "url": "https://images.unsplash.com/photo-9M66C_w_ToM?w=800",
-      "thumbnail": "https://images.unsplash.com/photo-9M66C_w_ToM?w=400",
+      "url": "https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=800&q=80",
+      "thumbnail": "https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=400&q=80",
       "primaryStyle": "traditional",
       "secondaryStyles": [],
       "colors": ["beige", "brown", "white"],
@@ -50,8 +50,8 @@
     },
     {
       "id": "minimalist-001",
-      "url": "https://images.unsplash.com/photo-ZuHIek5xn_I?w=800",
-      "thumbnail": "https://images.unsplash.com/photo-ZuHIek5xn_I?w=400",
+      "url": "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&q=80",
+      "thumbnail": "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=400&q=80",
       "primaryStyle": "minimalist",
       "secondaryStyles": ["modern"],
       "colors": ["white", "neutral", "light"],
@@ -62,8 +62,8 @@
     },
     {
       "id": "minimalist-002",
-      "url": "https://images.unsplash.com/photo-IlNHSsfTunM?w=800",
-      "thumbnail": "https://images.unsplash.com/photo-IlNHSsfTunM?w=400",
+      "url": "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80",
+      "thumbnail": "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400&q=80",
       "primaryStyle": "minimalist",
       "secondaryStyles": ["scandinavian"],
       "colors": ["white", "beige", "neutral"],
@@ -74,8 +74,8 @@
     },
     {
       "id": "bohemian-001",
-      "url": "https://images.unsplash.com/photo-W0z0hO3UOd8?w=800",
-      "thumbnail": "https://images.unsplash.com/photo-W0z0hO3UOd8?w=400",
+      "url": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+      "thumbnail": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",
       "primaryStyle": "bohemian",
       "secondaryStyles": [],
       "colors": ["colorful", "vibrant", "mixed"],
@@ -86,8 +86,8 @@
     },
     {
       "id": "bohemian-002",
-      "url": "https://images.unsplash.com/photo-c8Jb3thPwrQ?w=800",
-      "thumbnail": "https://images.unsplash.com/photo-c8Jb3thPwrQ?w=400",
+      "url": "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=800&q=80",
+      "thumbnail": "https://images.unsplash.com/photo-1615529182904-14819c35db37?w=400&q=80",
       "primaryStyle": "bohemian",
       "secondaryStyles": [],
       "colors": ["earth-tones", "mixed"],
@@ -98,32 +98,32 @@
     },
     {
       "id": "industrial-001",
-      "url": "https://images.unsplash.com/photo-CsLnGolUDxQ?w=800",
-      "thumbnail": "https://images.unsplash.com/photo-CsLnGolUDxQ?w=400",
+      "url": "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=800&q=80",
+      "thumbnail": "https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?w=400&q=80",
       "primaryStyle": "industrial",
       "secondaryStyles": ["modern"],
       "colors": ["gray", "brown", "dark"],
-      "furniture": ["leather-sofa"],
-      "lighting": ["lamp"],
-      "attributes": ["brick-wall", "vintage"],
-      "alt": "Modern-vintage style industrial living room with brick wall"
+      "furniture": ["leather-sofa", "coffee-table"],
+      "lighting": ["pendant", "natural"],
+      "attributes": ["brick-wall", "exposed-beams", "urban"],
+      "alt": "Industrial living room with exposed brick wall and leather furniture"
     },
     {
       "id": "industrial-002",
-      "url": "https://images.unsplash.com/photo-1GY7rUTRnRI?w=800",
-      "thumbnail": "https://images.unsplash.com/photo-1GY7rUTRnRI?w=400",
+      "url": "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800&q=80",
+      "thumbnail": "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=400&q=80",
       "primaryStyle": "industrial",
-      "secondaryStyles": [],
-      "colors": ["brick", "brown", "dark"],
-      "furniture": ["loft-bed"],
-      "lighting": ["natural"],
-      "attributes": ["loft", "brick-wall"],
-      "alt": "Industrial loft room with exposed brick wall"
+      "secondaryStyles": ["modern"],
+      "colors": ["gray", "metal", "dark"],
+      "furniture": ["sectional-sofa"],
+      "lighting": ["track-lighting"],
+      "attributes": ["loft", "concrete", "urban"],
+      "alt": "Modern industrial loft living room with concrete walls"
     },
     {
       "id": "scandinavian-001",
-      "url": "https://images.unsplash.com/photo-G9Jkxy7kI0o?w=800",
-      "thumbnail": "https://images.unsplash.com/photo-G9Jkxy7kI0o?w=400",
+      "url": "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=800&q=80",
+      "thumbnail": "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=400&q=80",
       "primaryStyle": "scandinavian",
       "secondaryStyles": ["minimalist"],
       "colors": ["white", "light-wood", "pastels"],
@@ -134,15 +134,15 @@
     },
     {
       "id": "scandinavian-002",
-      "url": "https://images.unsplash.com/photo-8fF_tF2ZMSQ?w=800",
-      "thumbnail": "https://images.unsplash.com/photo-8fF_tF2ZMSQ?w=400",
+      "url": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&q=80",
+      "thumbnail": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=400&q=80",
       "primaryStyle": "scandinavian",
       "secondaryStyles": ["modern"],
       "colors": ["white", "beige", "wood"],
-      "furniture": ["simple-chair", "sofa"],
-      "lighting": ["natural"],
-      "attributes": ["hygge", "warm-tones"],
-      "alt": "Cozy Scandinavian living room with natural elements and warm tones"
+      "furniture": ["sofa", "armchair"],
+      "lighting": ["natural", "floor-lamp"],
+      "attributes": ["hygge", "warm", "cozy"],
+      "alt": "Warm and inviting Scandinavian living room with neutral tones"
     }
   ]
 }
