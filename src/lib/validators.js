@@ -38,11 +38,15 @@ export function sanitizeInput(text) {
   // Trim whitespace
   const trimmed = text.trim()
 
-  // Remove HTML tags using a simple regex
-  // This is basic XSS prevention - in production, consider using DOMPurify
-  const withoutHtml = trimmed.replace(/<[^>]*>/g, '')
+  // First, remove script and style tags with their content for security
+  let cleaned = trimmed.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+  cleaned = cleaned.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
 
-  return withoutHtml
+  // Then remove remaining HTML tags (keeping content)
+  // This is basic XSS prevention - in production, consider using DOMPurify
+  cleaned = cleaned.replace(/<[^>]*>/g, '')
+
+  return cleaned
 }
 
 /**

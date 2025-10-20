@@ -13,6 +13,7 @@ describe('sessionManager', () => {
     // Clear localStorage before each test
     localStorage.clear()
     vi.clearAllMocks()
+    vi.restoreAllMocks()
   })
 
   describe('createSession', () => {

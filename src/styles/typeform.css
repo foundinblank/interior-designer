@@ -366,3 +366,26 @@ body {
     font-size: 1.25rem;
   }
 }
+
+/* Reduced motion support - disable all animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .typeform-image-option:hover,
+  .typeform-submit:hover,
+  .results-image:hover,
+  .settings-btn:hover {
+    transform: none;
+  }
+
+  .question-container-hidden {
+    transition: none;
+  }
+}

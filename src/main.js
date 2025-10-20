@@ -2,8 +2,8 @@
  * Main entry point for Interior Style Discovery App
  */
 
-import { createSession, loadSession, saveSession, addChoice } from './services/sessionManager.js'
-import { calculateStyleScores, isConfidentRecommendation, getTopStyles, extractKeywords, generateRecommendationSet, getSecondBestStyle } from './services/recommendationEngine.js'
+import { createSession, loadSession, saveSession, addChoice, getStorageAvailability } from './services/sessionManager.js'
+import { calculateStyleScores, isConfidentRecommendation, getTopStyles, extractKeywords, generateRecommendationSet, getSecondBestStyle, calculateEstimatedRounds, getProgressMessage } from './services/recommendationEngine.js'
 import { validateExplanation } from './lib/validators.js'
 import { analyzeExplanation } from './services/llmAnalyzer.js'
 import { showSettingsModal } from './components/SettingsModal.js'
@@ -26,6 +26,36 @@ let currentImagePair = null
 // Filter out broken/invalid images on startup
 let validImages = []
 
+// Global error boundary - catch unhandled errors
+window.addEventListener('error', (event) => {
+  console.error('Unhandled error:', event.error)
+  showErrorBoundary(event.error)
+})
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled promise rejection:', event.reason)
+  showErrorBoundary(event.reason)
+})
+
+function showErrorBoundary(error) {
+  const appContent = document.getElementById('app-content')
+  if (appContent) {
+    appContent.innerHTML = `
+      <div class="error-boundary">
+        <h1>😔 Something went wrong</h1>
+        <p>We encountered an unexpected error. Please try refreshing the page.</p>
+        <details>
+          <summary>Error details</summary>
+          <pre>${error?.message || error || 'Unknown error'}</pre>
+        </details>
+        <button onclick="window.location.reload()" class="typeform-submit">
+          Refresh Page
+        </button>
+      </div>
+    `
+  }
+}
+
 // Initialize app
 init()
 
@@ -46,6 +76,19 @@ async function init() {
 
   renderApp()
   setupKeyboardShortcuts()
+  showStorageWarningIfNeeded()
+}
+
+function showStorageWarningIfNeeded() {
+  if (!getStorageAvailability()) {
+    const warningBanner = document.createElement('div')
+    warningBanner.className = 'storage-warning'
+    warningBanner.setAttribute('role', 'alert')
+    warningBanner.innerHTML = `
+      ⚠️ Browser storage unavailable. Your progress will be lost if you refresh the page.
+    `
+    document.body.insertBefore(warningBanner, document.body.firstChild)
+  }
 }
 
 async function validateImages(imagesToValidate) {
@@ -89,7 +132,9 @@ function renderDiscoveryPhase(container) {
   // Get two random images
   currentImagePair = getRandomImagePair()
 
-  // Calculate progress (6-15 rounds expected)
+  // Calculate progress and estimated rounds
+  const estimatedRemaining = calculateEstimatedRounds(session)
+  const progressMessage = getProgressMessage(session.currentRound, estimatedRemaining)
   const progress = Math.min((session.currentRound / 12) * 100, 100)
 
   container.innerHTML = `
@@ -103,8 +148,8 @@ function renderDiscoveryPhase(container) {
       <div class="progress-fill" style="width: ${progress}%"></div>
     </div>
 
-    <!-- Round number -->
-    <div class="round-number">Round ${session.currentRound} of ~12</div>
+    <!-- Progress indicator with round number and estimation -->
+    <div class="round-number" role="status" aria-live="polite">${progressMessage}</div>
 
     <!-- Question -->
     <div class="question-container" id="image-selection-container">
@@ -251,6 +296,13 @@ async function handleSubmitExplanation() {
       session.recommendedStyle = topStyles[0]
       session.secondBestStyle = topStyles[1]
       session.phase = 'recommendations'
+    } else if (session.currentRound > 15) {
+      // Max rounds reached without high confidence - show best guess
+      const topStyles = getTopStyles(session.styleScores, 2)
+      session.recommendedStyle = topStyles[0] || 'modern' // Fallback to modern if no clear preference
+      session.secondBestStyle = topStyles[1]
+      session.phase = 'recommendations'
+      session.lowConfidence = true // Flag for showing disclaimer
     }
 
     // Save session
@@ -285,10 +337,20 @@ function renderRecommendationsPhase(container) {
     validImages
   )
 
+  // Check for low confidence disclaimer
+  const lowConfidenceDisclaimer = session.lowConfidence ? `
+    <div class="low-confidence-notice" role="alert">
+      <strong>Note:</strong> We couldn't determine a strong preference from your choices,
+      but based on your selections, we think ${style?.displayName} might suit you best.
+      Feel free to explore alternatives if this doesn't feel quite right!
+    </div>
+  ` : ''
+
   container.innerHTML = `
     <div class="recommendations-phase">
       <h1>Your Style: ${style?.displayName}</h1>
       <p>${style?.description}</p>
+      ${lowConfidenceDisclaimer}
 
       <div class="recommendation-grid">
         ${recommendedImages.map(img => `
@@ -308,6 +370,8 @@ function renderRecommendationsPhase(container) {
 
   document.getElementById('confirm-style')?.addEventListener('click', () => {
     session.phase = 'complete'
+    session.endTime = Date.now() // Track completion time for analytics
+    session.completionDuration = Math.round((session.endTime - session.startTime) / 1000) // Duration in seconds
     saveSession(session)
     renderApp()
   })
@@ -382,6 +446,8 @@ function renderAlternativesPhase(container) {
 
   document.getElementById('confirm-alternative')?.addEventListener('click', () => {
     session.phase = 'complete'
+    session.endTime = Date.now() // Track completion time for analytics
+    session.completionDuration = Math.round((session.endTime - session.startTime) / 1000) // Duration in seconds
     saveSession(session)
     renderApp()
   })

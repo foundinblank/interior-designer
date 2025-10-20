@@ -140,6 +140,24 @@
   border: 2px solid var(--color-border);
 }
 
+/* Low confidence notice */
+.low-confidence-notice {
+  background: rgba(255, 152, 0, 0.1);
+  border: 2px solid rgba(255, 152, 0, 0.3);
+  border-radius: 8px;
+  padding: var(--spacing-md);
+  margin: var(--spacing-lg) 0;
+  color: #f57c00;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.low-confidence-notice strong {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
 .confirmation-prompt {
   text-align: center;
   margin: var(--spacing-xxl) 0;

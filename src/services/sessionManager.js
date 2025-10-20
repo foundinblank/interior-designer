@@ -8,6 +8,20 @@ import { generateUUID } from '@/lib/utils.js'
 const STORAGE_KEY = 'interiorDesignSession'
 const SESSION_TIMEOUT_MS = 24 * 60 * 60 * 1000 // 24 hours
 
+// In-memory fallback when localStorage is unavailable
+let inMemorySession = null
+let isLocalStorageAvailable = true
+
+// Check localStorage availability on module load
+try {
+  const testKey = '__storage_test__'
+  localStorage.setItem(testKey, 'test')
+  localStorage.removeItem(testKey)
+} catch (e) {
+  isLocalStorageAvailable = false
+  console.warn('localStorage is unavailable. Using in-memory session storage. Session will be lost on page refresh.')
+}
+
 /**
  * Creates a new session with default values
  * @returns {Session} New session object
@@ -34,11 +48,25 @@ export function createSession() {
 export function saveSession(session) {
   try {
     const json = JSON.stringify(session)
-    localStorage.setItem(STORAGE_KEY, json)
+
+    if (isLocalStorageAvailable) {
+      localStorage.setItem(STORAGE_KEY, json)
+    } else {
+      // Fallback to in-memory storage
+      inMemorySession = session
+    }
+
     return true
   } catch (error) {
     console.error('Failed to save session:', error)
-    return false
+    // Try in-memory fallback if localStorage fails
+    try {
+      inMemorySession = session
+      isLocalStorageAvailable = false
+      return true
+    } catch (e) {
+      return false
+    }
   }
 }
 
@@ -48,7 +76,23 @@ export function saveSession(session) {
  */
 export function loadSession() {
   try {
-    const json = localStorage.getItem(STORAGE_KEY)
+    let json = null
+
+    if (isLocalStorageAvailable) {
+      json = localStorage.getItem(STORAGE_KEY)
+    } else if (inMemorySession) {
+      // Use in-memory fallback
+      const session = inMemorySession
+
+      // Validate session is not expired
+      if (!isSessionValid(session)) {
+        clearSession()
+        return null
+      }
+
+      return session
+    }
+
     if (!json) {
       return null
     }
@@ -98,10 +142,25 @@ export function addChoice(session, choice) {
  */
 export function clearSession() {
   try {
-    localStorage.removeItem(STORAGE_KEY)
+    if (isLocalStorageAvailable) {
+      localStorage.removeItem(STORAGE_KEY)
+    } else {
+      // Clear in-memory session
+      inMemorySession = null
+    }
   } catch (error) {
     console.error('Failed to clear session:', error)
+    // Clear in-memory fallback
+    inMemorySession = null
   }
+}
+
+/**
+ * Checks if localStorage is available
+ * @returns {boolean} True if localStorage is available
+ */
+export function getStorageAvailability() {
+  return isLocalStorageAvailable
 }
 
 /**
